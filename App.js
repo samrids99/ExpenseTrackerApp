@@ -79,7 +79,6 @@ export default function App() {
             name="ManageExpense"
             component={ManageExpense}
             options={{
-              title: "Manage Expense",
               presentation: "modal",
             }}
           />
