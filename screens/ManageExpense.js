@@ -1,5 +1,7 @@
 import { useLayoutEffect } from "react";
-import { Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import IconButton from "../components/UI/IconButton";
+import { GlobalStyles } from "../constants/styles";
 
 function ManageExpense({ route, navigation }) {
   const editedExpenseId = route.params?.expenseId;
@@ -12,7 +14,37 @@ function ManageExpense({ route, navigation }) {
     });
   }, [navigation, isEditing]);
 
-  return <Text>An Expense is managed here</Text>;
+  function deleteExpenseHandler() {}
+
+  return (
+    <View style={styles.container}>
+      {isEditing && (
+        <View style={styles.deleteContainer}>
+          <IconButton
+            icon="trash"
+            color={GlobalStyles.colours.error500}
+            size={36}
+            onPress={deleteExpenseHandler}
+          />
+        </View>
+      )}
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: GlobalStyles.colours.primary800,
+    padding: 24,
+  },
+  deleteContainer: {
+    marginTop: 16,
+    paddingTop: 8,
+    borderTopWidth: 2,
+    borderTopColor: GlobalStyles.colours.primary200,
+    alignItems: "center",
+  },
+});
 
 export default ManageExpense;
