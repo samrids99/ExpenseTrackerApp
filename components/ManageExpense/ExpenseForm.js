@@ -24,9 +24,9 @@ function ExpenseForm() {
       <Input
         label="Description"
         textInputConfig={{
-          placeholder: "YYYY-MM-DD",
-          maxLength: 10,
-          onChangeText: () => {},
+          multiline: true,
+          // autoCorrect: false (true is default)
+          // autoCapitalize: 'words' (sentences is default)
         }}
       />
     </View>
