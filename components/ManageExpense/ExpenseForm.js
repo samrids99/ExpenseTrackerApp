@@ -3,6 +3,7 @@ import Input from "./Input";
 import { useState } from "react";
 import Button from "../UI/Button";
 import { getFormattedDate } from "../../util/date";
+import { GlobalStyles } from "../../constants/styles";
 
 function ExpenseForm({ onCancel, onSubmit, submitButtonLabel, defaultValues }) {
   const [inputs, setInputs] = useState({
@@ -71,6 +72,7 @@ function ExpenseForm({ onCancel, onSubmit, submitButtonLabel, defaultValues }) {
         <Input
           style={styles.rowInput}
           label="Amount"
+          invalid={!inputs.amount.isValid}
           textInputConfig={{
             keyboardType: "decimal-pad",
             onChangeText: inputChangedHandler.bind(this, "amount"),
@@ -79,7 +81,8 @@ function ExpenseForm({ onCancel, onSubmit, submitButtonLabel, defaultValues }) {
         />
         <Input
           style={styles.rowInput}
-          label="date"
+          label="Date"
+          invalid={!inputs.date.isValid}
           textInputConfig={{
             placeholder: "YYYY-MM-DD",
             maxLength: 10,
@@ -90,6 +93,7 @@ function ExpenseForm({ onCancel, onSubmit, submitButtonLabel, defaultValues }) {
       </View>
       <Input
         label="Description"
+        invalid={!inputs.description.isValid}
         textInputConfig={{
           multiline: true,
           onChangeText: inputChangedHandler.bind(this, "description"),
@@ -99,7 +103,9 @@ function ExpenseForm({ onCancel, onSubmit, submitButtonLabel, defaultValues }) {
         }}
       />
       {formIsInvalid && (
-        <Text>Invalid Input Values - Please Check Your Entered Data</Text>
+        <Text style={styles.errorText}>
+          Invalid Input Values - Please Check Your Entered Data
+        </Text>
       )}
       <View style={styles.buttons}>
         <Button style={styles.button} mode="flat" onPress={onCancel}>
@@ -125,11 +131,15 @@ const styles = StyleSheet.create({
     color: "white",
     marginVertical: 24,
     textAlign: "center",
-    fontSize: 24,
   },
   inputsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  errorText: {
+    textAlign: "center",
+    color: GlobalStyles.colours.error500,
+    margin: 8,
   },
   rowInput: {
     flex: 1,
