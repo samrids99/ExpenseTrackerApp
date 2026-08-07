@@ -3,8 +3,11 @@ import axios from "axios";
 const apiUrl =
   "https://react-native-course-b4077-default-rtdb.europe-west1.firebasedatabase.app";
 
-export function storeExpense(expenseData) {
-  axios.post(apiUrl + "/expenses.json", expenseData);
+export async function storeExpense(expenseData) {
+  const response = await axios.post(apiUrl + "/expenses.json", expenseData);
+  // auto generated id is called name
+  const id = response.data.name;
+  return id;
 }
 
 export async function fetchExpenses() {
