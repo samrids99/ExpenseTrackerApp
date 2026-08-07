@@ -1,41 +1,9 @@
 import { createContext, useReducer } from "react";
 
-const DUMMY_EXPENSES = [
-  {
-    id: "e1",
-    description: "Wild Country Helm Elite 1",
-    amount: 225.0,
-    date: new Date("2026-04-20"),
-  },
-  {
-    id: "e2",
-    description: "Norway Home Shirt",
-    amount: 82.98,
-    date: new Date("2026-07-18"),
-  },
-  {
-    id: "e3",
-    description: "Otimos Camping Chair",
-    amount: 45.29,
-    date: new Date("2026-06-05"),
-  },
-  {
-    id: "e4",
-    description: "The Children of Ash & Elm",
-    amount: 14.1,
-    date: new Date("2026-06-08"),
-  },
-  {
-    id: "e5",
-    description: "Penny",
-    amount: 14500.0,
-    date: new Date("2026-05-02"),
-  },
-];
-
 export const ExpensesContext = createContext({
   expenses: [],
   addExpense: ({ description, amount, date }) => {},
+  setExpenses: (expenses) => {},
   deleteExpense: (id) => {},
   updateExpense: (id, { description, amount, date }) => {},
 });
@@ -46,6 +14,8 @@ function expensesReducer(state, action) {
       // don't update original data in memory
       const id = new Date().toString() + Math.random().toString();
       return [{ ...action.payload, id: id }, ...state];
+    case "SET":
+      return action.payload;
     case "UPDATE":
       const updatableExpenseIndex = state.findIndex(
         (expense) => expense.id === action.payload.id,
@@ -65,10 +35,14 @@ function expensesReducer(state, action) {
 
 function ExpensesContextProvider({ children }) {
   // second param value is initial value on first execution
-  const [expensesState, dispatch] = useReducer(expensesReducer, DUMMY_EXPENSES);
+  const [expensesState, dispatch] = useReducer(expensesReducer, []);
 
   function addExpense(expenseData) {
     dispatch({ type: "ADD", payload: expenseData });
+  }
+
+  function setExpenses(expenses) {
+    dispatch({ type: "SET", payload: expenses });
   }
 
   function deleteExpense(id) {
@@ -81,6 +55,7 @@ function ExpensesContextProvider({ children }) {
 
   const value = {
     expenses: expensesState,
+    setExpenses: setExpenses,
     addExpense: addExpense,
     deleteExpense: deleteExpense,
     updateExpense: updateExpense,
