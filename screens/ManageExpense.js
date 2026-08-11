@@ -7,11 +7,13 @@ import { ExpensesContext } from "../store/expenses-context";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 import { storeExpense, updateExpense, deleteExpense } from "../util/http";
 import LoadingOverlay from "../components/UI/LoadingOverlay";
+import ErrorOverlay from "../components/UI/ErrorOverlay";
 
 function ManageExpense({ route, navigation }) {
   const expensesCtx = useContext(ExpensesContext);
 
   const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState();
 
   const editedExpenseId = route.params?.expenseId;
   // !! converts a value into a boolean, truthy to true and vice versa
@@ -29,9 +31,14 @@ function ManageExpense({ route, navigation }) {
 
   async function deleteExpenseHandler() {
     setIsSending(true);
-    expensesCtx.deleteExpense(editedExpenseId);
-    await deleteExpense(editedExpenseId);
-    navigation.goBack();
+    try {
+      expensesCtx.deleteExpense(editedExpenseId);
+      await deleteExpense(editedExpenseId);
+      navigation.goBack();
+    } catch (error) {
+      setError("Unable to delete expense");
+      setIsSending(false);
+    }
   }
 
   function cancelHandler() {
@@ -39,6 +46,9 @@ function ManageExpense({ route, navigation }) {
   }
 
   async function confirmHandler(expenseData) {
+    const errorMessage = isEditing
+      ? "Unable to update expense"
+      : "Unable to create expense";
     setIsSending(true);
     try {
       if (isEditing) {
@@ -50,8 +60,17 @@ function ManageExpense({ route, navigation }) {
       }
       navigation.goBack();
     } catch (error) {
+      setError(errorMessage);
       setIsSending(false);
     }
+  }
+
+  function errorHandler() {
+    setError(null);
+  }
+
+  if (error && !isSending) {
+    return <ErrorOverlay message={error} onConfirm={errorHandler} />;
   }
 
   if (isSending) {
